@@ -29,13 +29,9 @@ const props = defineProps<{
   value: IValue;
 }>();
 
+const { toFields } = useForm();
+
 const fields = computed(() => {
-  return Object.keys(props.schema).map((key) => {
-    return {
-      key,
-      value: props.value[key],
-      schema: props.schema[key],
-    };
-  });
+  return toFields(props.value, props.schema);
 });
 </script>

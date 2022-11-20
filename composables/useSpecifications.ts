@@ -32,11 +32,24 @@ const defaultContent: ICarSpecification[] = [
 ];
 
 export function useSpecifications() {
+  const idCounter = useState<number>(() => defaultContent.length + 1);
+
   const specifications = useState<ICarSpecification[]>(() => [
     ...defaultContent,
   ]);
 
+  function get(id: string) {
+    const value = specifications.value.find((spec) => spec.id === id);
+
+    if (!value) {
+      throw new Error(`No specification with id ${id} found`);
+    }
+
+    return { ...value };
+  }
+
   function add(spec: ICarSpecification) {
+    spec.id = String(++idCounter.value);
     specifications.value.push(spec);
   }
 
@@ -46,5 +59,10 @@ export function useSpecifications() {
     );
   }
 
-  return { specifications, add, remove };
+  function update(spec: ICarSpecification) {
+    const index = specifications.value.findIndex((item) => item.id === spec.id);
+    specifications.value[index] = spec;
+  }
+
+  return { specifications, get, add, remove, update };
 }
